@@ -1,0 +1,44 @@
+{
+  "model": "anthropic/claude-haiku-4.5",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "\n```python\nimport anthropic\n\n\ndef fibonacci_with_claude(n: int) -> int:\n    \"\"\"\n    Compute the nth Fibonacci number using Claude's tool_use capability.\n    \n    Args:\n        n: The position in the Fibonacci sequence (0-indexed)\n        \n    Returns:\n        The nth Fibonacci number\n    \"\"\"\n    client = anthropic.Anthropic()\n    \n    # Define the tools that Claude can use\n    tools = [\n        {\n            \"name\": \"compute_fibonacci\",\n            \"description\": \"Compute the nth Fibonacci number recursively\",\n            \"input_schema\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"n\": {\n                        \"type\": \"integer\",\n                        \"description\": \"The position in the Fibonacci sequence (0-indexed)\"\n                    }\n                },\n                \"required\": [\"n\"]\n            }\n        }\n    ]\n    \n    def fib_helper(num: int) -> int:\n        \"\"\"Helper function to compute Fibonacci iteratively for efficiency\"\"\"\n        if num <= 1:\n            return num\n        a, b = 0, 1\n        for _ in range(2, num + 1):\n            a, b = b, a + b\n        return b\n    \n    # Create a message with Claude asking it to use the tool\n    response = client.messages.create(\n        model=\"claude-3-5-sonnet-20241022\",\n        max_tokens=1024,\n        tools=tools,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": f\"Please compute the {n}th Fibonacci number using the compute_fibonacci tool.\"\n            }\n        ]\n    )\n    \n    # Check if Claude wants to use the tool\n    for content_block in response.content:\n        if content_block.type == \"tool_use\" and content_block.name == \"compute_fibonacci\":\n            # Get the n value from the tool input\n            fib_n = content_block.input.get(\"n\", n)\n            # Compute the Fibonacci number\n            result = fib_helper(fib_n)\n            \n            # Send the result back to Claude\n            response = client.messages.create(\n                model=\"claude-3-5-sonnet-20241022\",\n                max_tokens=1024,\n                tools=tools,\n                messages=[\n                    {\n                        \"role\": \"user\",\n                        \"content\": f\"Please compute the {n}th Fibonacci number using the compute_fibonacci tool.\"\n                    },\n                    {\n                        \"role\": \"assistant\",\n                        \"content\": response.content\n                    },\n                    {\n                        \"role\": \"user\",\n                        \"content\": [\n                            {\n                                \"type\": \"tool_result\",\n                                \"tool_use_id\": content_block.id,\n                                \"content\": str(result)\n                            }\n                        ]\n                    }\n                ]\n            )\n            \n            return result\n    \n    # Fallback: if Claude didn't use the tool, compute directly\n    return fib_helper(n)\n\n\ndef fibonacci(n: int) -> int:\n    \"\"\"\n    Compute the nth Fibonacci number using an iterative approach.\n    \n    Args:\n        n: The position in the Fibonacci sequence (0-indexed)\n        \n    Returns:\n        The nth Fibonacci number\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"n must be non-negative\")\n    if n <= 1:\n        return n\n    \n    a, b = 0, 1\n    for _ in range(2, n + 1):\n        a, b = b, a + b\n    return b\n\n\nif __name__ == \"__main__\":\n    # Test the function with a few examples\n    test_cases = [0, 1, 5, 10, 20]\n    \n    print(\"Testing fibonacci function:\")\n    for test_n in test_cases:\n        result = fibonacci(test_n)\n        print(f\"fibonacci({test_n}) = {result}\")\n    \n    print(\"\\nTesting fibonacci_with_claude function:\")\n    for test_n in test_cases[:3]:  # Test with fewer cases to avoid too many API calls\n        result = fibonacci_with_claude(test_n)\n        print(f\"fibonacci_with_claude({test_n}) = {result}\")\n```",
+      "latency": 6.223005056381226
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Tool Call: get_weather with arguments {\"location\": \"Paris, France\"}",
+      "latency": 1.651369333267212
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": "I'm Claude, an AI assistant made by Anthropic.",
+      "latency": 1.4132628440856934
+    }
+  ]
+}
