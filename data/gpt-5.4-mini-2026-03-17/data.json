@@ -1,0 +1,45 @@
+{
+  "model": "gpt-5.4-mini-2026-03-17",
+  "date": "2026-03-18T15:52:55.920793",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "Error HTTP 400: {\"error\":{\"message\":\"gpt-5.4-mini-2026-03-17 is not a valid model ID\",\"code\":400},\"user_id\":\"org_33BbWVJfQpTAjNFt8iW4TURisZb\"}",
+      "latency": 0.5433180332183838
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Error HTTP 400: {\"error\":{\"message\":\"gpt-5.4-mini-2026-03-17 is not a valid model ID\",\"code\":400},\"user_id\":\"org_33BbWVJfQpTAjNFt8iW4TURisZb\"}",
+      "latency": 0.3054172992706299
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": "Error HTTP 400: {\"error\":{\"message\":\"gpt-5.4-mini-2026-03-17 is not a valid model ID\",\"code\":400},\"user_id\":\"org_33BbWVJfQpTAjNFt8iW4TURisZb\"}",
+      "latency": 0.19932341575622559
+    }
+  ]
+}
