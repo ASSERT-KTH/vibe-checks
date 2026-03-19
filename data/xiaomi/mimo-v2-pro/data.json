@@ -1,0 +1,45 @@
+{
+  "model": "xiaomi/mimo-v2-pro",
+  "date": "2026-03-19T07:42:18.584123",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "```python\ndef fibonacci(n):\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n        a, b = b, a + b\n    return b\n```",
+      "latency": 4.339811086654663
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Tool Call: get_weather with arguments {\"location\": \"Paris, France\"}",
+      "latency": 4.52579140663147
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": "I'm MiMo-v2-pro, a Xiaomi AI assistant created by the Xiaomi MiMo Team.",
+      "latency": 3.3606417179107666
+    }
+  ]
+}
