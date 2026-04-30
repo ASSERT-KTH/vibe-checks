@@ -1,0 +1,45 @@
+{
+  "model": "moonshotai/kimi-k2.6",
+  "date": "2026-04-30T10:43:50.128343",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "```python\ndef fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n```",
+      "latency": 26.90188717842102
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Tool Call: get_weather with arguments  {\"location\":\"Paris, France\"} ",
+      "latency": 3.2212116718292236
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": " I am Kimi, an AI assistant created by Moonshot AI.",
+      "latency": 13.704957246780396
+    }
+  ]
+}
