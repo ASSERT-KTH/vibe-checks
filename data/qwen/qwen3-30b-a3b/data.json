@@ -1,0 +1,45 @@
+{
+  "model": "qwen/qwen3-30b-a3b",
+  "date": "2026-05-04T15:22:26.928056",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "def fibonacci(n):\n    if n == 0:\n        return 0\n    elif n == 1:\n        return 1\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n        c = a + b\n        a = b\n        b = c\n    return b",
+      "latency": 15.063166618347168
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Tool Call: get_weather with arguments {\"location\": \"Paris, France\"}",
+      "latency": 2.50834059715271
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": "I am Qwen, a large language model developed by Alibaba Cloud.",
+      "latency": 4.020336627960205
+    }
+  ]
+}
