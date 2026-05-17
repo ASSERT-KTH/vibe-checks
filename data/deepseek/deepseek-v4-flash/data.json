@@ -1,0 +1,45 @@
+{
+  "model": "deepseek/deepseek-v4-flash",
+  "date": "2026-05-17T07:44:01.067290",
+  "tests": [
+    {
+      "test_name": "Code Generation Prompt",
+      "prompt": "Write a python function to compute the nth fibonacci number. Respond with code only.",
+      "response": "```python\ndef fibonacci(n: int) -> int:\n    if n < 0:\n        raise ValueError(\"Input must be non-negative\")\n    def fib_pair(k):\n        if k == 0:\n            return (0, 1)\n        a, b = fib_pair(k >> 1)\n        c = a * (2 * b - a)\n        d = a * a + b * b\n        if k & 1:\n            return (d, c + d)\n        else:\n            return (c, d)\n    return fib_pair(n)[0]\n```",
+      "latency": 2.9969217777252197
+    },
+    {
+      "test_name": "Tool Calling Test",
+      "prompt": "What is the weather in Paris?",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city, e.g. Paris, France"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "response": "Tool Call: get_weather with arguments {\"location\": \"Paris, France\"}",
+      "latency": 2.2427687644958496
+    },
+    {
+      "test_name": "Personality Check",
+      "prompt": "Who are you and who created you? Answer in one short sentence.",
+      "response": "I am DeepSeek, an AI assistant created by DeepSeek (\u6df1\u5ea6\u6c42\u7d22).",
+      "latency": 1.408785104751587
+    }
+  ]
+}
